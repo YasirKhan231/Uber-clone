@@ -7,7 +7,6 @@ module.exports.registeruser = async function (req, res, next) {
   if (!error.isEmpty()) {
     return res.status(400).json({ errors: error.array() });
   }
-  console.log(req.body);
   const { fullname, email, password } = req.body;
   const hashPassword = await userModel.hashPassword(password);
 
@@ -28,3 +27,19 @@ module.exports.registeruser = async function (req, res, next) {
     next(err); // Pass other errors to the next error handler
   }
 };
+
+module.exports.loginuser = async function (req, res, next) {
+  const { email, password } = await req.body;
+  const user = await userModel.findOne({ email }).select("password");
+  if (!user) {
+    return res.status(401).json({ message: "invalid email or password" });
+  }
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) {
+    return res.status(401).json({ msg: " invalid email or password" });
+  }
+  const token = await user.generateAuthToken();
+  res.status(200).json({ user: user, token });
+};
+
+module.exports.getUserProfile = async function (req, res, next) {};
