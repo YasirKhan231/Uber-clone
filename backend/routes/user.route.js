@@ -10,7 +10,7 @@ router.post("/register", [
     .isLength({ min: 3 })
     .withMessage(" first name must be 3 character long"),
   body("password")
-    .isLength({ min: 6 })
+    .isLength({ min: 5 })
     .withMessage("it should be min 6 character "),
 
   usercontroller.registeruser,
